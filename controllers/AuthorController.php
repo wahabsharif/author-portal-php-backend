@@ -1,5 +1,5 @@
 <?php
-include '../models/AuthorModel.php';
+include 'models/AuthorModel.php';
 
 class AuthorController
 {

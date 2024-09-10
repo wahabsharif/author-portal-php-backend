@@ -1,2 +1,2 @@
 <?php
-include '../routes/api.php';
+include 'routes/api.php';
