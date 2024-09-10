@@ -1,14 +1,22 @@
+# Enable URL rewriting
 RewriteEngine On
 
-# Allow access to static files
-RewriteRule ^css/(.*)$ css/$1 [L]
-RewriteRule ^js/(.*)$ js/$1 [L]
-RewriteRule ^images/(.*)$ images/$1 [L]
+# Set the base directory if your application is in a subdirectory
+# RewriteBase /path-to-your-app/
 
-# Allow API endpoints
-RewriteRule ^api/(.*)$ api.php?$1 [QSA,L]
-
-# Route everything else to index.php
+# Redirect all requests to index.php except for existing files and directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [L]
+
+# Optionally, handle trailing slashes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+# Handle CORS headers if needed (for debugging purposes, you might place this here)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>

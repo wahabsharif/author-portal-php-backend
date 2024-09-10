@@ -1,6 +1,7 @@
 <?php
 include 'models/AuthorModel.php';
 
+
 class AuthorController
 {
     protected $model;
@@ -12,16 +13,19 @@ class AuthorController
 
     public function getAuthors()
     {
-        header('Content-Type: application/json');
-        $data = $this->model->getAllAuthors();
-        echo json_encode($data);
+        sendCORSHeaders();
+        try {
+            $data = $this->model->getAllAuthors();
+            echo json_encode($data);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to fetch authors']);
+        }
     }
 
     public function addAuthor()
     {
-        header('Content-Type: application/json');
+        sendCORSHeaders();
         header('Access-Control-Allow-Methods: POST');
-        header('Access-Control-Allow-Origin: *');
 
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -30,46 +34,55 @@ class AuthorController
             return;
         }
 
-        $result = $this->model->insertAuthor(
-            $input['email'],
-            $input['password'],
-            $input['first_name'],
-            $input['middle_name'] ?? '',
-            $input['last_name'],
-            $input['pen_name'] ?? '',
-            $input['tel_no'] ?? ''
-        );
-
-        echo json_encode(['status' => $result ? 'success' : 'error']);
+        try {
+            $result = $this->model->insertAuthor(
+                $input['email'],
+                $input['password'],
+                $input['first_name'],
+                $input['middle_name'] ?? '',
+                $input['last_name'],
+                $input['pen_name'] ?? '',
+                $input['tel_no'] ?? ''
+            );
+            echo json_encode(['status' => $result ? 'success' : 'error']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to add author']);
+        }
     }
+
     public function deleteAuthor($authorId)
     {
-        header('Content-Type: application/json');
+        sendCORSHeaders();
         header('Access-Control-Allow-Methods: DELETE');
-        header('Access-Control-Allow-Origin: *');
 
         if (!$authorId) {
             echo json_encode(['status' => 'error', 'message' => 'Missing author_id']);
             return;
         }
 
-        $result = $this->model->deleteAuthor($authorId);
-
-        echo json_encode(['status' => $result ? 'success' : 'error']);
+        try {
+            $result = $this->model->deleteAuthor($authorId);
+            echo json_encode(['status' => $result ? 'success' : 'error']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete author']);
+        }
     }
 
     public function getAuthorById($authorId)
     {
-        header('Content-Type: application/json');
-        $data = $this->model->getAuthorById($authorId);
-        echo json_encode($data);
+        sendCORSHeaders();
+        try {
+            $data = $this->model->getAuthorById($authorId);
+            echo json_encode($data);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to fetch author']);
+        }
     }
 
     public function updateAuthorById($authorId)
     {
-        header('Content-Type: application/json');
+        sendCORSHeaders();
         header('Access-Control-Allow-Methods: PUT');
-        header('Access-Control-Allow-Origin: *');
 
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -105,8 +118,11 @@ class AuthorController
             return;
         }
 
-        $result = $this->model->updateAuthorById($authorId, $updates);
-
-        echo json_encode(['status' => $result ? 'success' : 'error']);
+        try {
+            $result = $this->model->updateAuthorById($authorId, $updates);
+            echo json_encode(['status' => $result ? 'success' : 'error']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update author']);
+        }
     }
 }

@@ -1,11 +1,15 @@
-
 <?php
-include 'config/config.php';
+// db.php
+
+$host = 'localhost';
+$db = 'author_portal';
+$user = 'root';
+$pass = '';
 
 try {
-    $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
+    echo json_encode(['error' => 'Database connection failed']);
     exit;
 }
