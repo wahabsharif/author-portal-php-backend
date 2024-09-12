@@ -79,4 +79,23 @@ class AuthorModel
             throw new Exception('Failed to update author');
         }
     }
+
+    public function loginAuthor($email, $password)
+    {
+        global $pdo;
+        try {
+            $stmt = $pdo->prepare('SELECT * FROM authors WHERE email_address = ?');
+            $stmt->execute([$email]);
+            $author = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($author && md5($password) === $author['password']) {
+                return $author;
+            }
+
+            return false;
+        } catch (PDOException $e) {
+            file_put_contents('db_error_log.txt', $e->getMessage(), FILE_APPEND);
+            throw new Exception('Failed to log in author');
+        }
+    }
 }

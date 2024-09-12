@@ -125,4 +125,38 @@ class AuthorController
             echo json_encode(['status' => 'error', 'message' => 'Failed to update author']);
         }
     }
+
+    public function loginAuthor()
+    {
+        sendCORSHeaders();
+        header('Access-Control-Allow-Methods: POST');
+
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($input['email']) || !isset($input['password'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
+            return;
+        }
+
+        try {
+            $author = $this->model->loginAuthor($input['email'], $input['password']);
+            if ($author) {
+                // Generate a simple token (in production, you should use JWT or a similar secure method)
+                $token = base64_encode($author['email_address'] . ':' . $author['password']);
+
+                // Store the token in the session
+                $_SESSION['token'] = $token;
+
+                echo json_encode(['status' => 'success', 'token' => $token, 'author' => $author]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid email or password']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to log in']);
+        }
+    }
 }

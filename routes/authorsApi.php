@@ -42,6 +42,9 @@ if ($uri === '/authors' && $method === 'GET') {
 } elseif (preg_match('/\/authors\/(\d+)/', $uri, $matches) && $method === 'PUT') {
     sendCORSHeaders();
     $controller->updateAuthorById($matches[1]);
+} elseif ($uri === '/login' && $method === 'POST') {
+    sendCORSHeaders();
+    $controller->loginAuthor();
 } else {
     http_response_code(404);
     echo json_encode(['status' => 'error', 'message' => 'Not Found']);
