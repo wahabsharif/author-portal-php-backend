@@ -1,13 +1,12 @@
 <?php
 include 'controllers/AuthorController.php';
+include 'CORS.php';
 
-function sendCORSHeaders($responseCode = 200)
-{
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    header("Content-Type: application/json");
-    http_response_code($responseCode);
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    handleCORS();
+    exit(0);
 }
 
 // Determine environment (local or live)
@@ -27,25 +26,40 @@ $uri = str_replace($basePath, '', $uri);
 $controller = new AuthorController();
 
 // Routing logic
-if ($uri === '/authors' && $method === 'GET') {
-    sendCORSHeaders();
-    $controller->getAuthors();
-} elseif ($uri === '/authors' && $method === 'POST') {
-    sendCORSHeaders();
-    $controller->addAuthor();
-} elseif (preg_match('/\/authors\/(\d+)/', $uri, $matches) && $method === 'GET') {
-    sendCORSHeaders();
-    $controller->getAuthorById($matches[1]);
-} elseif (preg_match('/\/authors\/(\d+)/', $uri, $matches) && $method === 'DELETE') {
-    sendCORSHeaders();
-    $controller->deleteAuthor($matches[1]);
-} elseif (preg_match('/\/authors\/(\d+)/', $uri, $matches) && $method === 'PUT') {
-    sendCORSHeaders();
-    $controller->updateAuthorById($matches[1]);
-} elseif ($uri === '/login' && $method === 'POST') {
-    sendCORSHeaders();
-    $controller->loginAuthor();
-} else {
-    http_response_code(404);
-    echo json_encode(['status' => 'error', 'message' => 'Not Found']);
+switch ($uri) {
+    case '/authors':
+        if ($method === 'GET') {
+            handleCORS();
+            $controller->getAuthors();
+        } elseif ($method === 'POST') {
+            handleCORS();
+            $controller->addAuthor();
+        }
+        break;
+
+    case preg_match('/\/authors\/(\d+)/', $uri, $matches) ? $uri : '':
+        $authorId = $matches[1];
+        if ($method === 'GET') {
+            handleCORS();
+            $controller->getAuthorById($authorId);
+        } elseif ($method === 'DELETE') {
+            handleCORS();
+            $controller->deleteAuthor($authorId);
+        } elseif ($method === 'PUT') {
+            handleCORS();
+            $controller->updateAuthorById($authorId);
+        }
+        break;
+
+    case '/login':
+        if ($method === 'POST') {
+            handleCORS();
+            $controller->loginAuthor();
+        }
+        break;
+
+    default:
+        http_response_code(404);
+        echo json_encode(['status' => 'error', 'message' => 'Not Found']);
+        break;
 }

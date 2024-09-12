@@ -13,7 +13,7 @@ class AuthorController
 
     public function getAuthors()
     {
-        sendCORSHeaders();
+        handleCORS();
         try {
             $data = $this->model->getAllAuthors();
             echo json_encode($data);
@@ -24,7 +24,7 @@ class AuthorController
 
     public function addAuthor()
     {
-        sendCORSHeaders();
+        handleCORS();
         header('Access-Control-Allow-Methods: POST');
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -52,7 +52,7 @@ class AuthorController
 
     public function deleteAuthor($authorId)
     {
-        sendCORSHeaders();
+        handleCORS();
         header('Access-Control-Allow-Methods: DELETE');
 
         if (!$authorId) {
@@ -70,7 +70,7 @@ class AuthorController
 
     public function getAuthorById($authorId)
     {
-        sendCORSHeaders();
+        handleCORS();
         try {
             $data = $this->model->getAuthorById($authorId);
             echo json_encode($data);
@@ -81,7 +81,7 @@ class AuthorController
 
     public function updateAuthorById($authorId)
     {
-        sendCORSHeaders();
+        handleCORS();
         header('Access-Control-Allow-Methods: PUT');
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -128,7 +128,7 @@ class AuthorController
 
     public function loginAuthor()
     {
-        sendCORSHeaders();
+        handleCORS();
         header('Access-Control-Allow-Methods: POST');
 
         if (session_status() == PHP_SESSION_NONE) {
