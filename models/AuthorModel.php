@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Ensure this is included
+require_once 'db.php'; // Ensure this is require_onced
 
 class AuthorModel
 {

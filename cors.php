@@ -1,5 +1,4 @@
 <?php
-
 // Define constants for easier maintenance
 define('ALLOWED_ORIGINS', 'http://localhost:3000'); // Ensure this is the exact origin of your frontend app
 define('ALLOWED_METHODS', ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']);

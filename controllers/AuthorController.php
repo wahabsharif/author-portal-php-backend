@@ -1,5 +1,7 @@
 <?php
-include 'models/AuthorModel.php';
+require_once 'models/AuthorModel.php';
+require_once 'cors.php';
+
 
 
 class AuthorController

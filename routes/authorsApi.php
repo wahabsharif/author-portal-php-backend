@@ -1,6 +1,6 @@
 <?php
-include 'controllers/AuthorController.php';
-include 'CORS.php';
+require_once 'controllers/AuthorController.php';
+require_once 'cors.php';
 
 
 // Handle preflight requests
